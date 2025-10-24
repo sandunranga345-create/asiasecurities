@@ -1,0 +1,1728 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asia Securities - Admin Panel</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #1a3a5f;
+            --secondary-color: #2c5aa0;
+            --accent-color: #e63946;
+            --light-color: #f8f9fa;
+            --dark-color: #343a40;
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
+            color: var(--dark-color);
+            line-height: 1.3;
+            min-height: 100vh;
+            padding: 0;
+            font-size: 11px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 8px;
+            min-height: 100vh;
+        }
+        
+        header {
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 6px 0;
+            border-bottom: 2px solid var(--accent-color);
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 10px;
+        }
+        
+        .logo {
+            height: 35px;
+            background: white;
+            border-radius: 4px;
+            padding: 3px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .title-section {
+            flex: 1;
+            text-align: center;
+        }
+        
+        h1 {
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+        
+        h1 i {
+            color: var(--accent-color);
+        }
+        
+        .btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            transition: all 0.3s ease;
+        }
+        
+        .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        
+        .btn-primary {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+        
+        .btn-success {
+            background-color: var(--success-color);
+            color: white;
+        }
+        
+        .btn-danger {
+            background-color: var(--accent-color);
+            color: white;
+        }
+        
+        .btn-warning {
+            background-color: var(--warning-color);
+            color: black;
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid var(--secondary-color);
+            color: var(--secondary-color);
+        }
+        
+        .btn.active {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin: 8px 0;
+            flex-wrap: wrap;
+            background: white;
+            padding: 10px;
+            border-radius: 8px;
+            align-items: center;
+        }
+        
+        .search-box {
+            flex: 1;
+            min-width: 180px;
+            position: relative;
+        }
+        
+        .search-box input {
+            width: 100%;
+            padding: 8px 35px 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 15px;
+            font-size: 0.9rem;
+        }
+        
+        .search-box i {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #777;
+        }
+        
+        .extension-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+        
+        .department-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            overflow: hidden;
+            display: block;
+            height: auto;
+        }
+        
+        .department-card.dragging {
+            opacity: 0.5;
+            transform: scale(0.95);
+        }
+        
+        .department-card.drag-over {
+            border: 2px dashed var(--accent-color);
+            background-color: #f8f9fa;
+        }
+        
+        .drag-handle {
+            position: absolute;
+            left: 5px;
+            top: 5px;
+            cursor: move;
+            color: var(--secondary-color);
+            opacity: 0.5;
+            transition: opacity 0.3s ease;
+            z-index: 2;
+        }
+        
+        .department-card:hover .drag-handle {
+            opacity: 1;
+        }
+        
+        .department-header {
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 8px 12px;
+            font-weight: 600;
+        }
+        
+        .department-name {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .extensions-container {
+            display: block;
+        }
+        
+        .extension-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 6px 12px;
+            border-bottom: 1px solid #f0f0f0;
+            position: relative;
+            min-height: 32px;
+        }
+        
+        .extension-item:last-child {
+            border-bottom: none;
+        }
+        
+        .extension-name {
+            font-weight: 500;
+            flex: 1;
+            padding-right: 50px;
+        }
+        
+        .extension-number {
+            font-weight: 600;
+            color: var(--secondary-color);
+            min-width: 50px;
+            text-align: right;
+            position: absolute;
+            right: 40px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        
+        .extension-actions {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            gap: 2px;
+        }
+        
+        .extension-action-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 3px;
+            border-radius: 3px;
+            font-size: 0.6rem;
+            width: 18px;
+            height: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+        
+        .extension-action-btn:hover {
+            transform: scale(1.1);
+        }
+        
+        .edit-extension {
+            background-color: var(--warning-color);
+            color: white;
+        }
+        
+        .delete-extension {
+            background-color: var(--accent-color);
+            color: white;
+        }
+        
+        .editable {
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+        
+        .editable:hover {
+            background-color: #e8f2ff;
+        }
+        
+        .editable input {
+            width: 100%;
+            padding: 4px 6px;
+            border: 1px solid var(--secondary-color);
+            border-radius: 4px;
+            background: white;
+        }
+        
+        .actions {
+            display: flex;
+            gap: 6px;
+            padding: 8px 10px;
+            background: #f8f9fa;
+            border-top: 1px solid #e9ecef;
+        }
+        
+        .action-btn {
+            padding: 4px 8px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            flex: 1;
+            text-align: center;
+        }
+        
+        .action-btn:hover {
+            transform: translateY(-1px);
+        }
+        
+        .no-results {
+            text-align: center;
+            padding: 40px 20px;
+            color: #7f8c8d;
+            width: 100%;
+            grid-column: 1 / -1;
+            font-size: 1rem;
+        }
+        
+        .no-results i {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            color: #bdc3c7;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            width: 90%;
+            max-width: 400px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .modal h2 {
+            margin-bottom: 15px;
+            color: var(--primary-color);
+            text-align: center;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+        
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+        
+        .form-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            gap: 10px;
+        }
+        
+        .form-actions .btn {
+            flex: 1;
+        }
+        
+        .notification {
+            position: fixed;
+            top: 15px;
+            right: 15px;
+            padding: 12px 20px;
+            border-radius: 6px;
+            color: white;
+            font-weight: 500;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+            z-index: 1100;
+            transform: translateX(150%);
+            transition: transform 0.3s ease;
+        }
+        
+        .notification.show {
+            transform: translateX(0);
+        }
+        
+        .notification.success {
+            background-color: var(--success-color);
+            color: white;
+        }
+        
+        .notification.error {
+            background-color: var(--accent-color);
+            color: white;
+        }
+        
+        .notification.warning {
+            background-color: var(--warning-color);
+            color: black;
+        }
+        
+        .update-info {
+            text-align: center;
+            margin: 8px 0;
+            color: #666;
+            font-style: italic;
+            background: white;
+            padding: 8px 15px;
+            border-radius: 8px;
+        }
+
+        .login-modal {
+            display: flex;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.8);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .login-form {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            width: 90%;
+            max-width: 350px;
+        }
+
+        .login-form h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: var(--primary-color);
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .file-label {
+            display: block;
+            padding: 10px;
+            background: #f8f9fa;
+            border: 2px dashed #ddd;
+            border-radius: 5px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .file-label:hover {
+            border-color: var(--secondary-color);
+            background: #e3f2fd;
+        }
+
+        .import-preview {
+            margin-top: 15px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 5px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .preview-item {
+            padding: 5px;
+            border-bottom: 1px solid #ddd;
+            font-size: 0.8rem;
+        }
+
+        .preview-item:last-child {
+            border-bottom: none;
+        }
+
+        .arrange-mode .department-card {
+            cursor: move;
+        }
+
+        .arrange-mode .extension-actions,
+        .arrange-mode .actions,
+        .arrange-mode .editable {
+            pointer-events: none;
+            opacity: 0.6;
+        }
+
+        /* Print Styles - One Page Summary */
+        @media print {
+            body {
+                background: white !important;
+                font-size: 9px !important;
+                line-height: 1.1 !important;
+            }
+            
+            .container {
+                max-width: 100% !important;
+                padding: 5mm !important;
+                margin: 0 !important;
+            }
+            
+            header, .controls, .update-info, .notification, .modal, 
+            .btn, .search-box, .actions, .extension-actions, .drag-handle {
+                display: none !important;
+            }
+            
+            .extension-grid {
+                display: grid !important;
+                grid-template-columns: repeat(4, 1fr) !important;
+                gap: 2mm !important;
+                page-break-inside: avoid !important;
+            }
+            
+            .department-card {
+                break-inside: avoid;
+                page-break-inside: avoid;
+                border: 1px solid #ccc !important;
+                box-shadow: none !important;
+                height: auto !important;
+            }
+            
+            .department-header {
+                background: #f0f0f0 !important;
+                color: black !important;
+                border-bottom: 1px solid #ccc;
+                padding: 2px 5px !important;
+            }
+            
+            .extension-item {
+                border-bottom: 1px solid #eee;
+                padding: 1px 5px !important;
+            }
+            
+            .extension-name {
+                font-size: 0.7rem !important;
+                padding-right: 0 !important;
+            }
+            
+            .extension-number {
+                color: black !important;
+                font-size: 0.7rem !important;
+                position: static !important;
+                transform: none !important;
+            }
+            
+            /* Ensure it fits on one page */
+            @page {
+                size: A4;
+                margin: 10mm;
+            }
+            
+            body, .container, .extension-grid {
+                width: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 1200px) {
+            .extension-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .extension-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .extension-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-modal" id="loginModal">
+        <div class="login-form">
+            <h2><i class="fas fa-lock"></i> Admin Login</h2>
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" placeholder="Enter username">
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" placeholder="Enter password">
+            </div>
+            <div class="form-actions">
+                <button id="cancelLogin" class="btn btn-outline">Cancel</button>
+                <button id="submitLogin" class="btn btn-primary">Login</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container" id="mainContainer" style="display: none;">
+        <header>
+            <div class="header-content">
+                <div class="logo">
+                    <div style="text-align: center; color: var(--primary-color); font-weight: bold; padding: 3px;">
+                        <div style="font-size: 0.7rem; line-height: 1;">ASIA SECURITIES</div>
+                        <div style="font-size: 0.6rem;">ADMIN PANEL</div>
+                    </div>
+                </div>
+                <div class="title-section">
+                    <h1><i class="fas fa-phone-alt"></i> Telephone Extensions - Admin</h1>
+                </div>
+                <div>
+                    <button id="logoutBtn" class="btn btn-outline" style="display: none;">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                    <button id="viewerBtn" class="btn btn-outline">
+                        <i class="fas fa-eye"></i> Viewer Site
+                    </button>
+                </div>
+            </div>
+        </header>
+        
+        <div class="update-info">
+            <i class="fas fa-info-circle"></i> <span id="lastUpdated">Last updated on 03/10/2025</span>
+        </div>
+        
+        <div class="controls">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Search extensions...">
+                <i class="fas fa-search"></i>
+            </div>
+            <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
+                <button id="addExtension" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> Add Extension
+                </button>
+                <button id="addDepartment" class="btn btn-primary">
+                    <i class="fas fa-folder-plus"></i> Add Department
+                </button>
+                <button id="arrangeBtn" class="btn btn-warning">
+                    <i class="fas fa-arrows-alt"></i> Arrange
+                </button>
+                <button id="importBtn" class="btn btn-outline">
+                    <i class="fas fa-file-import"></i> Import
+                </button>
+                <button id="exportBtn" class="btn btn-outline">
+                    <i class="fas fa-file-export"></i> Export
+                </button>
+                <button id="saveBtn" class="btn btn-success">
+                    <i class="fas fa-save"></i> Save
+                </button>
+                <button id="printBtn" class="btn btn-outline">
+                    <i class="fas fa-print"></i> Print
+                </button>
+            </div>
+        </div>
+        
+        <div class="extension-grid" id="extensionList">
+            <!-- Departments will load here -->
+        </div>
+    </div>
+    
+    <!-- Add Extension Modal -->
+    <div id="addModal" class="modal">
+        <div class="modal-content">
+            <h2><i class="fas fa-plus-circle"></i> Add Extension</h2>
+            <div class="form-group">
+                <label for="newDept">Department</label>
+                <select id="newDept"></select>
+            </div>
+            <div class="form-group">
+                <label for="newName">Name</label>
+                <input type="text" id="newName" placeholder="Enter name">
+            </div>
+            <div class="form-group">
+                <label for="newExtension">Extension</label>
+                <input type="text" id="newExtension" placeholder="Enter extension">
+            </div>
+            <div class="form-actions">
+                <button id="cancelAdd" class="btn btn-outline">Cancel</button>
+                <button id="submitAdd" class="btn btn-primary">Add Extension</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Edit Extension Modal -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <h2><i class="fas fa-edit"></i> Edit Extension</h2>
+            <div class="form-group">
+                <label for="editDept">Department</label>
+                <select id="editDept"></select>
+            </div>
+            <div class="form-group">
+                <label for="editName">Name</label>
+                <input type="text" id="editName" placeholder="Enter name">
+            </div>
+            <div class="form-group">
+                <label for="editExtension">Extension</label>
+                <input type="text" id="editExtension" placeholder="Enter extension">
+            </div>
+            <div class="form-actions">
+                <button id="cancelEdit" class="btn btn-outline">Cancel</button>
+                <button id="submitEdit" class="btn btn-primary">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Import Modal -->
+    <div id="importModal" class="modal">
+        <div class="modal-content">
+            <h2><i class="fas fa-file-import"></i> Import from Excel/CSV</h2>
+            <div class="form-group">
+                <label class="file-label" for="csvFile">
+                    <i class="fas fa-upload fa-2x"></i><br>
+                    <span>Click to upload CSV file</span>
+                    <input type="file" id="csvFile" class="file-input" accept=".csv,.xlsx,.xls">
+                </label>
+            </div>
+            <div class="form-group">
+                <label>CSV Format:</label>
+                <textarea readonly style="height: 80px; font-size: 0.7rem; font-family: monospace;">
+Department,Name,Extension
+IT DEPARTMENT,JOHN DOE,1001
+HR DEPARTMENT,JANE SMITH,1002
+                </textarea>
+            </div>
+            <div id="importPreview" class="import-preview" style="display: none;">
+                <h4>Preview:</h4>
+                <div id="previewContent"></div>
+            </div>
+            <div class="form-actions">
+                <button id="cancelImport" class="btn btn-outline">Cancel</button>
+                <button id="submitImport" class="btn btn-primary" disabled>Import Data</button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="notification" class="notification"></div>
+
+    <script>
+        // Data
+        let departments = [];
+        let nextDeptId = 2;
+        let nextExtId = 2;
+        let currentEditingExtension = null;
+        let isAuthenticated = false;
+        let isArrangeMode = false;
+        let draggedDept = null;
+        let username = 'admin';
+        let password = 'asia2025';
+
+        // GitHub Configuration
+        const GITHUB_TOKEN = 'YOUR_GITHUB_TOKEN'; // Replace with your GitHub token
+        const GITHUB_REPO = 'your-username/your-repo'; // Replace with your repo
+        const DATA_FILE_PATH = 'extensions.json';
+        const LAST_UPDATED_FILE_PATH = 'last_updated.txt';
+
+        // DOM Elements
+        const loginModal = document.getElementById('loginModal');
+        const mainContainer = document.getElementById('mainContainer');
+        const extensionList = document.getElementById('extensionList');
+        const addExtensionBtn = document.getElementById('addExtension');
+        const addDepartmentBtn = document.getElementById('addDepartment');
+        const arrangeBtn = document.getElementById('arrangeBtn');
+        const importBtn = document.getElementById('importBtn');
+        const exportBtn = document.getElementById('exportBtn');
+        const saveBtn = document.getElementById('saveBtn');
+        const printBtn = document.getElementById('printBtn');
+        const searchInput = document.getElementById('searchInput');
+        const viewerBtn = document.getElementById('viewerBtn');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const addModal = document.getElementById('addModal');
+        const editModal = document.getElementById('editModal');
+        const importModal = document.getElementById('importModal');
+        const cancelAdd = document.getElementById('cancelAdd');
+        const submitAdd = document.getElementById('submitAdd');
+        const cancelEdit = document.getElementById('cancelEdit');
+        const submitEdit = document.getElementById('submitEdit');
+        const cancelImport = document.getElementById('cancelImport');
+        const submitImport = document.getElementById('submitImport');
+        const csvFile = document.getElementById('csvFile');
+        const newDeptSelect = document.getElementById('newDept');
+        const newNameInput = document.getElementById('newName');
+        const newExtensionInput = document.getElementById('newExtension');
+        const editDeptSelect = document.getElementById('editDept');
+        const editNameInput = document.getElementById('editName');
+        const editExtensionInput = document.getElementById('editExtension');
+        const usernameInput = document.getElementById('username');
+        const passwordInput = document.getElementById('password');
+        const cancelLogin = document.getElementById('cancelLogin');
+        const submitLogin = document.getElementById('submitLogin');
+        const notification = document.getElementById('notification');
+        const lastUpdatedElement = document.getElementById('lastUpdated');
+
+        // Initialize
+        init();
+
+        async function init() {
+            setupEventListeners();
+            showLoginModal();
+        }
+
+        function setupEventListeners() {
+            // Login events
+            submitLogin.addEventListener('click', handleLogin);
+            cancelLogin.addEventListener('click', () => window.location.href = 'viewer.html');
+            usernameInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') handleLogin();
+            });
+            passwordInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') handleLogin();
+            });
+
+            // Admin functionality events
+            addExtensionBtn.addEventListener('click', showAddModal);
+            addDepartmentBtn.addEventListener('click', addDepartment);
+            arrangeBtn.addEventListener('click', toggleArrangeMode);
+            importBtn.addEventListener('click', showImportModal);
+            exportBtn.addEventListener('click', exportToExcel);
+            saveBtn.addEventListener('click', saveAllChanges);
+            printBtn.addEventListener('click', printPage);
+            searchInput.addEventListener('input', searchExtensions);
+            viewerBtn.addEventListener('click', () => window.open('viewer.html', '_blank'));
+            logoutBtn.addEventListener('click', handleLogout);
+            
+            // Modal events
+            cancelAdd.addEventListener('click', hideAddModal);
+            submitAdd.addEventListener('click', handleAddExtension);
+            cancelEdit.addEventListener('click', hideEditModal);
+            submitEdit.addEventListener('click', handleEditExtension);
+            cancelImport.addEventListener('click', hideImportModal);
+            submitImport.addEventListener('click', handleImport);
+
+            // File input event
+            csvFile.addEventListener('change', handleFileSelect);
+
+            // Enter key support
+            newNameInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') handleAddExtension();
+            });
+            newExtensionInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') handleAddExtension();
+            });
+            editNameInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') handleEditExtension();
+            });
+            editExtensionInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') handleEditExtension();
+            });
+
+            // Close modals on outside click
+            addModal.addEventListener('click', (e) => {
+                if (e.target === addModal) hideAddModal();
+            });
+            editModal.addEventListener('click', (e) => {
+                if (e.target === editModal) hideEditModal();
+            });
+            importModal.addEventListener('click', (e) => {
+                if (e.target === importModal) hideImportModal();
+            });
+        }
+
+        // Authentication functions
+        function showLoginModal() {
+            loginModal.style.display = 'flex';
+            mainContainer.style.display = 'none';
+            usernameInput.value = '';
+            passwordInput.value = '';
+            usernameInput.focus();
+        }
+
+        function hideLoginModal() {
+            loginModal.style.display = 'none';
+            mainContainer.style.display = 'block';
+        }
+
+        function handleLogin() {
+            const inputUsername = usernameInput.value.trim();
+            const inputPassword = passwordInput.value.trim();
+
+            if (inputUsername === username && inputPassword === password) {
+                isAuthenticated = true;
+                hideLoginModal();
+                logoutBtn.style.display = 'flex';
+                loadData();
+                showNotification('Login successful!', 'success');
+            } else {
+                showNotification('Invalid username or password!', 'error');
+                passwordInput.value = '';
+                passwordInput.focus();
+            }
+        }
+
+        function handleLogout() {
+            isAuthenticated = false;
+            logoutBtn.style.display = 'none';
+            showLoginModal();
+            showNotification('Logged out successfully', 'success');
+        }
+
+        // GitHub API functions
+        async function githubApiRequest(endpoint, options = {}) {
+            const url = `https://api.github.com/repos/${GITHUB_REPO}${endpoint}`;
+            
+            const defaultOptions = {
+                headers: {
+                    'Authorization': `token ${GITHUB_TOKEN}`,
+                    'Accept': 'application/vnd.github.v3+json',
+                    'Content-Type': 'application/json'
+                }
+            };
+
+            const response = await fetch(url, { ...defaultOptions, ...options });
+            
+            if (!response.ok) {
+                throw new Error(`GitHub API error: ${response.status}`);
+            }
+            
+            return response.json();
+        }
+
+        async function getFileContent(filePath) {
+            try {
+                const data = await githubApiRequest(`/contents/${filePath}`);
+                return JSON.parse(atob(data.content));
+            } catch (error) {
+                console.error('Error fetching file:', error);
+                return null;
+            }
+        }
+
+        async function updateFile(filePath, content, commitMessage) {
+            try {
+                // Get current file SHA
+                const currentFile = await githubApiRequest(`/contents/${filePath}`);
+                const sha = currentFile.sha;
+
+                const response = await githubApiRequest(`/contents/${filePath}`, {
+                    method: 'PUT',
+                    body: JSON.stringify({
+                        message: commitMessage,
+                        content: btoa(JSON.stringify(content, null, 2)),
+                        sha: sha
+                    })
+                });
+
+                return response;
+            } catch (error) {
+                console.error('Error updating file:', error);
+                throw error;
+            }
+        }
+
+        // Data functions
+        async function loadData() {
+            try {
+                const data = await getFileContent(DATA_FILE_PATH);
+                if (data) {
+                    departments = data;
+                    // Calculate next IDs
+                    nextDeptId = Math.max(...departments.map(d => d.id)) + 1;
+                    const allExtIds = departments.flatMap(d => d.extensions.map(e => e.id));
+                    nextExtId = allExtIds.length > 0 ? Math.max(...allExtIds) + 1 : 1;
+                } else {
+                    throw new Error('Failed to load data from GitHub');
+                }
+            } catch (error) {
+                const stored = localStorage.getItem('asiaSecuritiesExtensions');
+                departments = stored ? JSON.parse(stored) : getDefaultData();
+                showNotification('Using local storage (offline mode)', 'warning');
+            }
+            await loadLastUpdatedDate();
+            renderExtensions();
+        }
+
+        function getDefaultData() {
+            return [{
+                id: 1,
+                name: "IT DEPARTMENT",
+                order: 1,
+                extensions: [{ id: 1, name: "JOHN DOE", extension: "1001" }]
+            }];
+        }
+
+        async function saveDepartments() {
+            if (!isAuthenticated) {
+                showNotification('Please login to save changes', 'error');
+                return;
+            }
+
+            try {
+                await updateFile(DATA_FILE_PATH, departments, 'Update extensions data');
+                
+                // Update last updated file
+                const lastUpdated = new Date().toLocaleDateString('en-GB');
+                await updateFile(LAST_UPDATED_FILE_PATH, lastUpdated, 'Update last modified date');
+                
+                showNotification('Data saved successfully to GitHub!', 'success');
+                await loadLastUpdatedDate();
+            } catch (error) {
+                localStorage.setItem('asiaSecuritiesExtensions', JSON.stringify(departments));
+                localStorage.setItem('asiaSecuritiesLastUpdated', new Date().toLocaleDateString('en-GB'));
+                showNotification('Saved to local storage (offline mode)', 'warning');
+            }
+        }
+
+        async function saveDepartmentOrder() {
+            if (!isAuthenticated) {
+                showNotification('Please login to save arrangement', 'error');
+                return;
+            }
+
+            try {
+                const order = {};
+                departments.forEach((dept, index) => {
+                    order[dept.id] = index + 1;
+                });
+
+                await updateFile(DATA_FILE_PATH, departments, 'Update department order');
+                
+                // Update last updated file
+                const lastUpdated = new Date().toLocaleDateString('en-GB');
+                await updateFile(LAST_UPDATED_FILE_PATH, lastUpdated, 'Update last modified date');
+                
+                showNotification('Department arrangement saved to GitHub!', 'success');
+                await loadLastUpdatedDate();
+            } catch (error) {
+                localStorage.setItem('asiaSecuritiesExtensions', JSON.stringify(departments));
+                localStorage.setItem('asiaSecuritiesLastUpdated', new Date().toLocaleDateString('en-GB'));
+                showNotification('Arrangement saved to local storage (offline mode)', 'warning');
+            }
+        }
+
+        async function loadLastUpdatedDate() {
+            try {
+                const lastUpdated = await getFileContent(LAST_UPDATED_FILE_PATH);
+                if (lastUpdated) {
+                    lastUpdatedElement.textContent = `Last updated on ${lastUpdated}`;
+                }
+            } catch (error) {
+                const stored = localStorage.getItem('asiaSecuritiesLastUpdated');
+                if (stored) {
+                    lastUpdatedElement.textContent = `Last updated on ${stored}`;
+                }
+            }
+        }
+
+        // Rendering functions
+        function renderExtensions() {
+            extensionList.innerHTML = '';
+            
+            if (departments.length === 0) {
+                extensionList.innerHTML = `
+                    <div class="no-results">
+                        <i class="fas fa-folder-open"></i>
+                        <h3>No Departments Found</h3>
+                        <p>Add your first department to get started</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            departments.forEach(dept => {
+                const deptElement = createDepartmentElement(dept);
+                extensionList.appendChild(deptElement);
+            });
+        }
+
+        function createDepartmentElement(dept) {
+            const deptElement = document.createElement('div');
+            deptElement.className = 'department-card';
+            deptElement.dataset.deptId = dept.id;
+            deptElement.draggable = isArrangeMode;
+            
+            if (isArrangeMode) {
+                const dragHandle = document.createElement('div');
+                dragHandle.className = 'drag-handle';
+                dragHandle.innerHTML = '<i class="fas fa-grip-vertical"></i>';
+                deptElement.appendChild(dragHandle);
+            }
+            
+            // Department header
+            const deptHeader = document.createElement('div');
+            deptHeader.className = 'department-header';
+            const deptName = document.createElement('div');
+            deptName.className = 'department-name';
+            deptName.innerHTML = `<i class="fas fa-folder"></i> ${dept.name}`;
+            deptHeader.appendChild(deptName);
+            
+            // Extensions container
+            const extensionsContainer = document.createElement('div');
+            extensionsContainer.className = 'extensions-container';
+            
+            // Add extensions
+            dept.extensions.forEach(ext => {
+                const extElement = document.createElement('div');
+                extElement.className = 'extension-item';
+                extElement.innerHTML = `
+                    <div class="extension-name editable" data-dept="${dept.id}" data-id="${ext.id}">${ext.name}</div>
+                    <div class="extension-number">${ext.extension}</div>
+                    <div class="extension-actions">
+                        <button class="extension-action-btn edit-extension" data-dept="${dept.id}" data-id="${ext.id}">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="extension-action-btn delete-extension" data-dept="${dept.id}" data-id="${ext.id}">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                `;
+                extensionsContainer.appendChild(extElement);
+            });
+            
+            // Department actions
+            const actions = document.createElement('div');
+            actions.className = 'actions';
+            actions.innerHTML = `
+                <button class="action-btn add-ext-btn" data-dept="${dept.id}">
+                    <i class="fas fa-plus"></i> Add
+                </button>
+                <button class="action-btn rename-dept-btn" data-dept="${dept.id}">
+                    <i class="fas fa-edit"></i> Rename
+                </button>
+                <button class="action-btn delete-dept-btn" data-dept="${dept.id}">
+                    <i class="fas fa-trash"></i> Delete
+                </button>
+            `;
+            
+            deptElement.appendChild(deptHeader);
+            deptElement.appendChild(extensionsContainer);
+            deptElement.appendChild(actions);
+            
+            // Add event listeners
+            setupDepartmentEventListeners(deptElement, dept);
+            
+            return deptElement;
+        }
+
+        function setupDepartmentEventListeners(deptElement, dept) {
+            // Add extension button
+            const addBtn = deptElement.querySelector('.add-ext-btn');
+            addBtn.addEventListener('click', () => {
+                showAddModal(dept.id);
+            });
+            
+            // Rename department button
+            const renameBtn = deptElement.querySelector('.rename-dept-btn');
+            renameBtn.addEventListener('click', () => {
+                renameDepartment(dept.id);
+            });
+            
+            // Delete department button
+            const deleteBtn = deptElement.querySelector('.delete-dept-btn');
+            deleteBtn.addEventListener('click', () => {
+                deleteDepartment(dept.id);
+            });
+            
+            // Edit extension buttons
+            const editBtns = deptElement.querySelectorAll('.edit-extension');
+            editBtns.forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const deptId = parseInt(btn.dataset.dept);
+                    const extId = parseInt(btn.dataset.id);
+                    showEditModal(deptId, extId);
+                    e.stopPropagation();
+                });
+            });
+            
+            // Delete extension buttons
+            const deleteExtBtns = deptElement.querySelectorAll('.delete-extension');
+            deleteExtBtns.forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const deptId = parseInt(btn.dataset.dept);
+                    const extId = parseInt(btn.dataset.id);
+                    deleteExtension(deptId, extId);
+                    e.stopPropagation();
+                });
+            });
+            
+            // Editable extension names
+            const editableNames = deptElement.querySelectorAll('.extension-name');
+            editableNames.forEach(editable => {
+                editable.addEventListener('click', (e) => {
+                    if (!isArrangeMode) {
+                        const deptId = parseInt(editable.dataset.dept);
+                        const extId = parseInt(editable.dataset.id);
+                        editExtensionName(deptId, extId, editable);
+                        e.stopPropagation();
+                    }
+                });
+            });
+            
+            // Drag and drop for arrange mode
+            if (isArrangeMode) {
+                deptElement.addEventListener('dragstart', handleDragStart);
+                deptElement.addEventListener('dragover', handleDragOver);
+                deptElement.addEventListener('dragenter', handleDragEnter);
+                deptElement.addEventListener('dragleave', handleDragLeave);
+                deptElement.addEventListener('drop', handleDrop);
+                deptElement.addEventListener('dragend', handleDragEnd);
+            }
+        }
+
+        // Drag and drop functions
+        function handleDragStart(e) {
+            draggedDept = this;
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/html', this.innerHTML);
+            this.classList.add('dragging');
+        }
+
+        function handleDragOver(e) {
+            e.preventDefault();
+            return false;
+        }
+
+        function handleDragEnter(e) {
+            this.classList.add('drag-over');
+        }
+
+        function handleDragLeave(e) {
+            this.classList.remove('drag-over');
+        }
+
+        function handleDrop(e) {
+            e.stopPropagation();
+            if (draggedDept !== this) {
+                const allDepts = Array.from(document.querySelectorAll('.department-card'));
+                const fromIndex = allDepts.indexOf(draggedDept);
+                const toIndex = allDepts.indexOf(this);
+                
+                // Reorder departments array
+                const movedDept = departments.splice(fromIndex, 1)[0];
+                departments.splice(toIndex, 0, movedDept);
+                
+                // Update order property
+                departments.forEach((dept, index) => {
+                    dept.order = index + 1;
+                });
+                
+                renderExtensions();
+                saveDepartmentOrder();
+            }
+            return false;
+        }
+
+        function handleDragEnd(e) {
+            document.querySelectorAll('.department-card').forEach(dept => {
+                dept.classList.remove('dragging');
+                dept.classList.remove('drag-over');
+            });
+        }
+
+        // Modal functions
+        function showAddModal(deptId = null) {
+            populateDepartmentSelect(newDeptSelect, deptId);
+            newNameInput.value = '';
+            newExtensionInput.value = '';
+            addModal.style.display = 'flex';
+            newNameInput.focus();
+        }
+
+        function hideAddModal() {
+            addModal.style.display = 'none';
+        }
+
+        function showEditModal(deptId, extId) {
+            const dept = departments.find(d => d.id === deptId);
+            const ext = dept.extensions.find(e => e.id === extId);
+            
+            if (ext) {
+                populateDepartmentSelect(editDeptSelect, deptId);
+                editNameInput.value = ext.name;
+                editExtensionInput.value = ext.extension;
+                currentEditingExtension = { deptId, extId };
+                editModal.style.display = 'flex';
+                editNameInput.focus();
+            }
+        }
+
+        function hideEditModal() {
+            editModal.style.display = 'none';
+            currentEditingExtension = null;
+        }
+
+        function showImportModal() {
+            document.getElementById('importPreview').style.display = 'none';
+            document.getElementById('submitImport').disabled = true;
+            importModal.style.display = 'flex';
+        }
+
+        function hideImportModal() {
+            importModal.style.display = 'none';
+            csvFile.value = '';
+        }
+
+        function populateDepartmentSelect(selectElement, selectedDeptId = null) {
+            selectElement.innerHTML = '';
+            departments.forEach(dept => {
+                const option = document.createElement('option');
+                option.value = dept.id;
+                option.textContent = dept.name;
+                if (dept.id === selectedDeptId) {
+                    option.selected = true;
+                }
+                selectElement.appendChild(option);
+            });
+        }
+
+        // Extension management functions
+        function handleAddExtension() {
+            const deptId = parseInt(newDeptSelect.value);
+            const name = newNameInput.value.trim();
+            const extension = newExtensionInput.value.trim();
+            
+            if (!name || !extension) {
+                showNotification('Please enter both name and extension', 'error');
+                return;
+            }
+            
+            addExtension(deptId, name, extension);
+            hideAddModal();
+        }
+
+        function addExtension(deptId, name, extension) {
+            const dept = departments.find(d => d.id === deptId);
+            if (dept) {
+                const newExtension = {
+                    id: nextExtId++,
+                    name: name.toUpperCase(),
+                    extension
+                };
+                dept.extensions.push(newExtension);
+                renderExtensions();
+                saveDepartments();
+                showNotification('Extension added successfully!', 'success');
+            }
+        }
+
+        function handleEditExtension() {
+            if (!currentEditingExtension) return;
+            
+            const { deptId, extId } = currentEditingExtension;
+            const newDeptId = parseInt(editDeptSelect.value);
+            const name = editNameInput.value.trim();
+            const extension = editExtensionInput.value.trim();
+            
+            if (!name || !extension) {
+                showNotification('Please enter both name and extension', 'error');
+                return;
+            }
+            
+            editExtension(deptId, extId, newDeptId, name, extension);
+            hideEditModal();
+        }
+
+        function editExtension(oldDeptId, extId, newDeptId, name, extension) {
+            // Find old department and extension
+            const oldDept = departments.find(d => d.id === oldDeptId);
+            const extIndex = oldDept.extensions.findIndex(e => e.id === extId);
+            
+            if (extIndex === -1) return;
+            
+            const extensionObj = oldDept.extensions[extIndex];
+            
+            // Update extension details
+            extensionObj.name = name.toUpperCase();
+            extensionObj.extension = extension;
+            
+            // Move to new department if needed
+            if (oldDeptId !== newDeptId) {
+                oldDept.extensions.splice(extIndex, 1);
+                const newDept = departments.find(d => d.id === newDeptId);
+                newDept.extensions.push(extensionObj);
+            }
+            
+            renderExtensions();
+            saveDepartments();
+            showNotification('Extension updated successfully!', 'success');
+        }
+
+        function editExtensionName(deptId, extId, element) {
+            const dept = departments.find(d => d.id === deptId);
+            const ext = dept.extensions.find(e => e.id === extId);
+            
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.value = ext.name;
+            input.style.width = '100%';
+            input.style.border = '1px solid var(--secondary-color)';
+            input.style.borderRadius = '4px';
+            input.style.padding = '2px 4px';
+            input.style.fontSize = 'inherit';
+            
+            element.innerHTML = '';
+            element.appendChild(input);
+            input.focus();
+            input.select();
+            
+            function saveName() {
+                const newName = input.value.trim().toUpperCase();
+                if (newName && newName !== ext.name) {
+                    ext.name = newName;
+                    element.textContent = newName;
+                    saveDepartments();
+                    showNotification('Name updated successfully!', 'success');
+                } else {
+                    element.textContent = ext.name;
+                }
+            }
+            
+            input.addEventListener('blur', saveName);
+            input.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    saveName();
+                }
+            });
+        }
+
+        function deleteExtension(deptId, extId) {
+            if (!confirm('Are you sure you want to delete this extension?')) return;
+            
+            const dept = departments.find(d => d.id === deptId);
+            dept.extensions = dept.extensions.filter(e => e.id !== extId);
+            
+            renderExtensions();
+            saveDepartments();
+            showNotification('Extension deleted successfully!', 'success');
+        }
+
+        // Department management functions
+        function addDepartment() {
+            const name = prompt('Enter department name:');
+            if (name && name.trim()) {
+                const newDept = {
+                    id: nextDeptId++,
+                    name: name.trim().toUpperCase(),
+                    order: departments.length + 1,
+                    extensions: []
+                };
+                departments.push(newDept);
+                renderExtensions();
+                saveDepartments();
+                showNotification('Department added successfully!', 'success');
+            }
+        }
+
+        function renameDepartment(deptId) {
+            const dept = departments.find(d => d.id === deptId);
+            const newName = prompt('Enter new department name:', dept.name);
+            if (newName && newName.trim()) {
+                dept.name = newName.trim().toUpperCase();
+                renderExtensions();
+                saveDepartments();
+                showNotification('Department renamed successfully!', 'success');
+            }
+        }
+
+        function deleteDepartment(deptId) {
+            const dept = departments.find(d => d.id === deptId);
+            if (dept.extensions.length > 0) {
+                if (!confirm(`This department has ${dept.extensions.length} extension(s). Are you sure you want to delete it?`)) {
+                    return;
+                }
+            } else {
+                if (!confirm('Are you sure you want to delete this department?')) return;
+            }
+            
+            departments = departments.filter(d => d.id !== deptId);
+            renderExtensions();
+            saveDepartments();
+            showNotification('Department deleted successfully!', 'success');
+        }
+
+        // Arrange mode functions
+        function toggleArrangeMode() {
+            isArrangeMode = !isArrangeMode;
+            arrangeBtn.classList.toggle('active', isArrangeMode);
+            
+            if (isArrangeMode) {
+                document.body.classList.add('arrange-mode');
+                arrangeBtn.innerHTML = '<i class="fas fa-check"></i> Done Arranging';
+                showNotification('Arrange mode activated. Drag departments to reorder.', 'success');
+            } else {
+                document.body.classList.remove('arrange-mode');
+                arrangeBtn.innerHTML = '<i class="fas fa-arrows-alt"></i> Arrange';
+                showNotification('Arrange mode deactivated.', 'success');
+            }
+            
+            renderExtensions();
+        }
+
+        // Import/Export functions
+        function handleFileSelect(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            const preview = document.getElementById('importPreview');
+            const previewContent = document.getElementById('previewContent');
+            const submitBtn = document.getElementById('submitImport');
+            
+            preview.style.display = 'block';
+            previewContent.innerHTML = '<div class="preview-item">Processing file...</div>';
+            submitBtn.disabled = true;
+            
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                try {
+                    const csvData = event.target.result;
+                    const parsedData = parseCSV(csvData);
+                    
+                    if (parsedData.length === 0) {
+                        previewContent.innerHTML = '<div class="preview-item" style="color: red;">No valid data found in file</div>';
+                        return;
+                    }
+                    
+                    previewContent.innerHTML = '';
+                    parsedData.forEach((row, index) => {
+                        const item = document.createElement('div');
+                        item.className = 'preview-item';
+                        item.innerHTML = `<strong>${row.Department}</strong> - ${row.Name} (${row.Extension})`;
+                        previewContent.appendChild(item);
+                    });
+                    
+                    submitBtn.disabled = false;
+                    window.importData = parsedData;
+                    
+                } catch (error) {
+                    previewContent.innerHTML = `<div class="preview-item" style="color: red;">Error parsing file: ${error.message}</div>`;
+                }
+            };
+            
+            reader.readAsText(file);
+        }
+
+        function parseCSV(csv) {
+            const lines = csv.split('\n').filter(line => line.trim());
+            if (lines.length < 2) return [];
+            
+            const headers = lines[0].split(',').map(h => h.trim());
+            
+            // Validate headers
+            const requiredHeaders = ['Department', 'Name', 'Extension'];
+            const hasRequiredHeaders = requiredHeaders.every(h => 
+                headers.some(header => header.toLowerCase().includes(h.toLowerCase()))
+            );
+            
+            if (!hasRequiredHeaders) {
+                throw new Error('CSV must contain Department, Name, and Extension columns');
+            }
+            
+            const data = [];
+            for (let i = 1; i < lines.length; i++) {
+                const values = lines[i].split(',').map(v => v.trim());
+                if (values.length >= 3) {
+                    const row = {
+                        Department: values[0],
+                        Name: values[1],
+                        Extension: values[2]
+                    };
+                    data.push(row);
+                }
+            }
+            
+            return data;
+        }
+
+        function handleImport() {
+            if (!window.importData || window.importData.length === 0) {
+                showNotification('No data to import', 'error');
+                return;
+            }
+            
+            const newDepartments = [];
+            const departmentMap = {};
+            
+            // Process import data
+            window.importData.forEach(row => {
+                const deptName = row.Department.toUpperCase();
+                const extName = row.Name.toUpperCase();
+                const extension = row.Extension;
+                
+                if (!departmentMap[deptName]) {
+                    departmentMap[deptName] = {
+                        id: nextDeptId++,
+                        name: deptName,
+                        order: Object.keys(departmentMap).length + 1,
+                        extensions: []
+                    };
+                    newDepartments.push(departmentMap[deptName]);
+                }
+                
+                departmentMap[deptName].extensions.push({
+                    id: nextExtId++,
+                    name: extName,
+                    extension
+                });
+            });
+            
+            // Replace existing data
+            departments = newDepartments;
+            renderExtensions();
+            saveDepartments();
+            hideImportModal();
+            showNotification(`Successfully imported ${window.importData.length} extensions`, 'success');
+        }
+
+        function exportToExcel() {
+            let csvContent = "Department,Name,Extension\n";
+            
+            departments.forEach(dept => {
+                dept.extensions.forEach(ext => {
+                    csvContent += `"${dept.name}","${ext.name}","${ext.extension}"\n`;
+                });
+            });
+            
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', 'asia_securities_extensions.csv');
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            showNotification('Data exported successfully!', 'success');
+        }
+
+        // Utility functions
+        function searchExtensions() {
+            const searchTerm = searchInput.value.trim().toLowerCase();
+            
+            if (!searchTerm) {
+                renderExtensions();
+                return;
+            }
+            
+            const filteredDepartments = departments.map(dept => {
+                const filteredExtensions = dept.extensions.filter(ext => 
+                    ext.name.toLowerCase().includes(searchTerm) || 
+                    ext.extension.includes(searchTerm)
+                );
+                
+                return {
+                    ...dept,
+                    extensions: filteredExtensions
+                };
+            }).filter(dept => dept.extensions.length > 0);
+            
+            renderFilteredExtensions(filteredDepartments);
+        }
+
+        function renderFilteredExtensions(filteredDepts) {
+            extensionList.innerHTML = '';
+            
+            if (filteredDepts.length === 0) {
+                extensionList.innerHTML = `
+                    <div class="no-results">
+                        <i class="fas fa-search"></i>
+                        <h3>No Extensions Found</h3>
+                        <p>Try adjusting your search terms</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            filteredDepts.forEach(dept => {
+                const deptElement = createDepartmentElement(dept);
+                extensionList.appendChild(deptElement);
+            });
+        }
+
+        function saveAllChanges() {
+            saveDepartments();
+        }
+
+        function printPage() {
+            window.print();
+        }
+
+        function showNotification(message, type = 'success') {
+            notification.textContent = message;
+            notification.className = `notification ${type}`;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

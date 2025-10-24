@@ -1,0 +1,516 @@
+[
+    {
+        "id": 1,
+        "name": "ASIA SECURITIES HOLDINGS",
+        "order": 1,
+        "extensions": [
+            {
+                "id": 1,
+                "name": "DUMITH",
+                "extension": "2088"
+            },
+            {
+                "id": 2,
+                "name": "CHAYA",
+                "extension": "2171"
+            },
+            {
+                "id": 3,
+                "name": "SABEEHA",
+                "extension": "2121"
+            }
+        ]
+    },
+    {
+        "id": 2,
+        "name": "RECEPTION",
+        "order": 2,
+        "extensions": [
+            {
+                "id": 4,
+                "name": "ANDRIANNA",
+                "extension": "2020"
+            }
+        ]
+    },
+    {
+        "id": 4,
+        "name": "HEAD OF OPERATIONS",
+        "order": 3,
+        "extensions": [
+            {
+                "id": 6,
+                "name": "AJITH",
+                "extension": "2090"
+            }
+        ]
+    },
+    {
+        "id": 3,
+        "name": "CUSTOMER SERVICE - EQUITIES",
+        "order": 4,
+        "extensions": [
+            {
+                "id": 5,
+                "name": "NANDUNI",
+                "extension": "2021"
+            }
+        ]
+    },
+    {
+        "id": 5,
+        "name": "STOCK BROKING\/EQUITIES",
+        "order": 5,
+        "extensions": [
+            {
+                "id": 7,
+                "name": "SHIYAM",
+                "extension": "2011"
+            },
+            {
+                "id": 8,
+                "name": "UDITH",
+                "extension": "2031"
+            },
+            {
+                "id": 9,
+                "name": "SABRI",
+                "extension": "2022"
+            },
+            {
+                "id": 10,
+                "name": "NIROSHAN",
+                "extension": "2007"
+            },
+            {
+                "id": 11,
+                "name": "ASHAN",
+                "extension": "2005"
+            },
+            {
+                "id": 12,
+                "name": "CHARITH",
+                "extension": "2015"
+            },
+            {
+                "id": 13,
+                "name": "GAGANI",
+                "extension": "2014"
+            },
+            {
+                "id": 14,
+                "name": "KALANA",
+                "extension": "2028"
+            },
+            {
+                "id": 15,
+                "name": "PRIYANTHA",
+                "extension": "2033"
+            },
+            {
+                "id": 16,
+                "name": "NAWODYA",
+                "extension": "2026"
+            },
+            {
+                "id": 17,
+                "name": "NUWAN SAMANTHA",
+                "extension": "2025"
+            },
+            {
+                "id": 18,
+                "name": "SONELLA",
+                "extension": "2013"
+            }
+        ]
+    },
+    {
+        "id": 6,
+        "name": "RESEARCH",
+        "order": 6,
+        "extensions": [
+            {
+                "id": 19,
+                "name": "SANJEEWA F",
+                "extension": "2044"
+            },
+            {
+                "id": 20,
+                "name": "NIROSHAN D",
+                "extension": "2047"
+            },
+            {
+                "id": 21,
+                "name": "SAKUNA",
+                "extension": "2043"
+            },
+            {
+                "id": 22,
+                "name": "DALRINE",
+                "extension": "2042"
+            },
+            {
+                "id": 23,
+                "name": "PESHALI",
+                "extension": "2045"
+            },
+            {
+                "id": 24,
+                "name": "SHAKTHI",
+                "extension": "2102"
+            },
+            {
+                "id": 25,
+                "name": "THIHANSA",
+                "extension": "2048"
+            },
+            {
+                "id": 26,
+                "name": "ADHEEKSHA",
+                "extension": "2048"
+            },
+            {
+                "id": 27,
+                "name": "SWASHTHIKA",
+                "extension": "2046"
+            }
+        ]
+    },
+    {
+        "id": 15,
+        "name": "INVESTMENT BANKING",
+        "order": 7,
+        "extensions": [
+            {
+                "id": 66,
+                "name": "HASANTHA",
+                "extension": "2198"
+            },
+            {
+                "id": 67,
+                "name": "UDESH",
+                "extension": "2175"
+            },
+            {
+                "id": 68,
+                "name": "TIVANKA",
+                "extension": "2179"
+            },
+            {
+                "id": 69,
+                "name": "AMANI",
+                "extension": "2173"
+            },
+            {
+                "id": 70,
+                "name": "RUWANDI",
+                "extension": "2178"
+            },
+            {
+                "id": 71,
+                "name": "THARUSHA",
+                "extension": "2174"
+            },
+            {
+                "id": 72,
+                "name": "NESHIGAN",
+                "extension": "2176"
+            },
+            {
+                "id": 73,
+                "name": "MECHALE",
+                "extension": "2177"
+            }
+        ]
+    },
+    {
+        "id": 8,
+        "name": "WEALTH MANAGEMENT",
+        "order": 8,
+        "extensions": [
+            {
+                "id": 30,
+                "name": "AVANCKA",
+                "extension": "2199"
+            },
+            {
+                "id": 31,
+                "name": "IMESHA",
+                "extension": "2180"
+            },
+            {
+                "id": 32,
+                "name": "SHANIKA",
+                "extension": "2191"
+            },
+            {
+                "id": 33,
+                "name": "HARINI",
+                "extension": "2161"
+            },
+            {
+                "id": 34,
+                "name": "GOWTHAMAN",
+                "extension": "2196"
+            },
+            {
+                "id": 35,
+                "name": "HARSHANI",
+                "extension": "2195"
+            },
+            {
+                "id": 36,
+                "name": "REBECCA",
+                "extension": "2192"
+            },
+            {
+                "id": 37,
+                "name": "NIDESH",
+                "extension": "2193"
+            },
+            {
+                "id": 38,
+                "name": "MENUN",
+                "extension": "2160"
+            },
+            {
+                "id": 39,
+                "name": "SAUBHAGYA",
+                "extension": "2107"
+            },
+            {
+                "id": 40,
+                "name": "SUPUNI",
+                "extension": "2194"
+            },
+            {
+                "id": 41,
+                "name": "CHRISTELLA",
+                "extension": "2197"
+            }
+        ]
+    },
+    {
+        "id": 7,
+        "name": "FOREIGN",
+        "order": 9,
+        "extensions": [
+            {
+                "id": 28,
+                "name": "CHANDIMA",
+                "extension": "2002"
+            },
+            {
+                "id": 29,
+                "name": "SHAMIL",
+                "extension": "2000"
+            }
+        ]
+    },
+    {
+        "id": 17,
+        "name": "LEGAL & COMPLIANCE",
+        "order": 10,
+        "extensions": [
+            {
+                "id": 77,
+                "name": "DILINI",
+                "extension": "2090"
+            },
+            {
+                "id": 78,
+                "name": "PUSHPIKA",
+                "extension": "2091"
+            },
+            {
+                "id": 79,
+                "name": "DANESHA",
+                "extension": "2092"
+            }
+        ]
+    },
+    {
+        "id": 9,
+        "name": "HR",
+        "order": 11,
+        "extensions": [
+            {
+                "id": 42,
+                "name": "THAMARA",
+                "extension": "2109"
+            },
+            {
+                "id": 43,
+                "name": "THOMALI",
+                "extension": "2110"
+            }
+        ]
+    },
+    {
+        "id": 10,
+        "name": "FINANCE - OPERATIONS",
+        "order": 12,
+        "extensions": [
+            {
+                "id": 44,
+                "name": "KERYN",
+                "extension": "2055"
+            },
+            {
+                "id": 45,
+                "name": "SANJAYA",
+                "extension": "2053"
+            },
+            {
+                "id": 46,
+                "name": "GIHAN",
+                "extension": "2008"
+            }
+        ]
+    },
+    {
+        "id": 12,
+        "name": "MEETING ROOMS & FACILITIES",
+        "order": 13,
+        "extensions": [
+            {
+                "id": 52,
+                "name": "6PAX ROOM-5TH FLOOR",
+                "extension": "2108"
+            },
+            {
+                "id": 53,
+                "name": "4PAX ROOM- 4TH FLOOR",
+                "extension": "2104"
+            },
+            {
+                "id": 54,
+                "name": "BOARD ROOM",
+                "extension": "2100"
+            },
+            {
+                "id": 55,
+                "name": "SECURITY 5TH FLOOR",
+                "extension": "2030"
+            },
+            {
+                "id": 56,
+                "name": "SECURITY 4TH FLOOR",
+                "extension": "2130"
+            },
+            {
+                "id": 57,
+                "name": "STAFF ROOM - 5TH FLOOR",
+                "extension": "2106"
+            },
+            {
+                "id": 58,
+                "name": "STAFF ROOM - 4TH FLOOR",
+                "extension": "2105"
+            }
+        ]
+    },
+    {
+        "id": 16,
+        "name": "DOCUMENTATION",
+        "order": 14,
+        "extensions": [
+            {
+                "id": 74,
+                "name": "SUMITH",
+                "extension": "2040"
+            },
+            {
+                "id": 75,
+                "name": "THUSHARA",
+                "extension": "2041"
+            },
+            {
+                "id": 76,
+                "name": "HIRUSHAN",
+                "extension": "2068"
+            }
+        ]
+    },
+    {
+        "id": 14,
+        "name": "IT",
+        "order": 15,
+        "extensions": [
+            {
+                "id": 61,
+                "name": "UTHPALA",
+                "extension": "2077"
+            },
+            {
+                "id": 62,
+                "name": "PRABA",
+                "extension": "2075"
+            },
+            {
+                "id": 63,
+                "name": "SANJAYA LIYANAGE",
+                "extension": "2010"
+            },
+            {
+                "id": 64,
+                "name": "HASHAN",
+                "extension": "2078"
+            },
+            {
+                "id": 65,
+                "name": "SANDUN",
+                "extension": "2076"
+            }
+        ]
+    },
+    {
+        "id": 11,
+        "name": "FINANCE - SETTLEMENTS",
+        "order": 16,
+        "extensions": [
+            {
+                "id": 47,
+                "name": "TASHIYA",
+                "extension": "2054"
+            },
+            {
+                "id": 48,
+                "name": "SHAMILA",
+                "extension": "2051"
+            },
+            {
+                "id": 49,
+                "name": "SURANGA",
+                "extension": "2103"
+            },
+            {
+                "id": 50,
+                "name": "GAYAN",
+                "extension": "2052"
+            },
+            {
+                "id": 51,
+                "name": "PRASAD",
+                "extension": "2056"
+            }
+        ]
+    },
+    {
+        "id": 13,
+        "name": "MARKETING",
+        "order": 17,
+        "extensions": [
+            {
+                "id": 59,
+                "name": "NISHANI",
+                "extension": "2340"
+            },
+            {
+                "id": 60,
+                "name": "TRISTAN",
+                "extension": "2342"
+            }
+        ]
+    }
+]
