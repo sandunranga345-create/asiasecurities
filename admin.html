@@ -523,6 +523,36 @@
             opacity: 0.6;
         }
 
+        .sync-status {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.7rem;
+            color: #666;
+        }
+
+        .sync-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: #28a745;
+            animation: pulse 2s infinite;
+        }
+
+        .sync-indicator.syncing {
+            background-color: #ffc107;
+        }
+
+        .sync-indicator.error {
+            background-color: #e63946;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
         /* Print Styles - One Page Summary */
         @media print {
             body {
@@ -645,7 +675,11 @@
                 <div class="title-section">
                     <h1><i class="fas fa-phone-alt"></i> Telephone Extensions - Admin</h1>
                 </div>
-                <div>
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <div class="sync-status">
+                        <div class="sync-indicator" id="syncIndicator"></div>
+                        <span id="syncStatus">Synced</span>
+                    </div>
                     <button id="logoutBtn" class="btn btn-outline" style="display: none;">
                         <i class="fas fa-sign-out-alt"></i> Logout
                     </button>
@@ -666,6 +700,9 @@
                 <i class="fas fa-search"></i>
             </div>
             <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
+                <button id="refreshBtn" class="btn btn-outline">
+                    <i class="fas fa-sync-alt"></i> Refresh
+                </button>
                 <button id="addExtension" class="btn btn-primary">
                     <i class="fas fa-plus"></i> Add Extension
                 </button>
@@ -785,11 +822,16 @@ HR DEPARTMENT,JANE SMITH,1002
         let username = 'admin';
         let password = 'asia2025';
 
-        // GitHub Configuration
-        const GITHUB_TOKEN = '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'; // Replace with your GitHub token
-        const GITHUB_REPO = 'sandunranga345-create/asiasecurities.git'; // Replace with your repo
+        // GitHub Configuration - UPDATE THESE!
+        const GITHUB_TOKEN = 'YOUR_GITHUB_TOKEN_HERE';
+        const GITHUB_REPO = 'your-username/your-repo-name';
         const DATA_FILE_PATH = 'extensions.json';
         const LAST_UPDATED_FILE_PATH = 'last_updated.txt';
+
+        // Real-time sync configuration
+        let syncInterval;
+        const SYNC_INTERVAL_TIME = 10000; // Sync every 10 seconds
+        let lastDataHash = '';
 
         // DOM Elements
         const loginModal = document.getElementById('loginModal');
@@ -802,6 +844,7 @@ HR DEPARTMENT,JANE SMITH,1002
         const exportBtn = document.getElementById('exportBtn');
         const saveBtn = document.getElementById('saveBtn');
         const printBtn = document.getElementById('printBtn');
+        const refreshBtn = document.getElementById('refreshBtn');
         const searchInput = document.getElementById('searchInput');
         const viewerBtn = document.getElementById('viewerBtn');
         const logoutBtn = document.getElementById('logoutBtn');
@@ -827,6 +870,8 @@ HR DEPARTMENT,JANE SMITH,1002
         const submitLogin = document.getElementById('submitLogin');
         const notification = document.getElementById('notification');
         const lastUpdatedElement = document.getElementById('lastUpdated');
+        const syncIndicator = document.getElementById('syncIndicator');
+        const syncStatus = document.getElementById('syncStatus');
 
         // Initialize
         init();
@@ -855,6 +900,7 @@ HR DEPARTMENT,JANE SMITH,1002
             exportBtn.addEventListener('click', exportToExcel);
             saveBtn.addEventListener('click', saveAllChanges);
             printBtn.addEventListener('click', printPage);
+            refreshBtn.addEventListener('click', manualRefresh);
             searchInput.addEventListener('input', searchExtensions);
             viewerBtn.addEventListener('click', () => window.open('viewer.html', '_blank'));
             logoutBtn.addEventListener('click', handleLogout);
@@ -894,6 +940,158 @@ HR DEPARTMENT,JANE SMITH,1002
             importModal.addEventListener('click', (e) => {
                 if (e.target === importModal) hideImportModal();
             });
+
+            // Auto-sync when tab becomes visible
+            document.addEventListener('visibilitychange', function() {
+                if (!document.hidden && isAuthenticated) {
+                    manualRefresh();
+                }
+            });
+        }
+
+        // GitHub API functions
+        async function githubApiRequest(endpoint, options = {}) {
+            const url = `https://api.github.com/repos/${GITHUB_REPO}${endpoint}`;
+            
+            // Add cache-busting for GET requests
+            const cacheBuster = options.method === 'GET' ? `?t=${Date.now()}` : '';
+            const fullUrl = url + cacheBuster;
+            
+            const defaultOptions = {
+                headers: {
+                    'Authorization': `token ${GITHUB_TOKEN}`,
+                    'Accept': 'application/vnd.github.v3+json',
+                    'Content-Type': 'application/json',
+                    'Cache-Control': 'no-cache'
+                }
+            };
+
+            try {
+                const response = await fetch(fullUrl, { ...defaultOptions, ...options });
+                
+                if (!response.ok) {
+                    throw new Error(`GitHub API error: ${response.status}`);
+                }
+                
+                return await response.json();
+            } catch (error) {
+                console.error('GitHub API request failed:', error);
+                throw error;
+            }
+        }
+
+        async function getFileContent(filePath) {
+            try {
+                updateSyncStatus('syncing', 'Syncing...');
+                const data = await githubApiRequest(`/contents/${filePath}`);
+                const content = atob(data.content);
+                
+                if (filePath === 'last_updated.txt') {
+                    return content;
+                } else {
+                    return JSON.parse(content);
+                }
+            } catch (error) {
+                console.error('Error fetching file:', error);
+                updateSyncStatus('error', 'Sync failed');
+                return null;
+            }
+        }
+
+        async function updateFile(filePath, content, commitMessage) {
+            try {
+                updateSyncStatus('syncing', 'Saving...');
+                
+                // Get current file SHA
+                let sha;
+                try {
+                    const currentFile = await githubApiRequest(`/contents/${filePath}`);
+                    sha = currentFile.sha;
+                } catch (error) {
+                    sha = null;
+                }
+
+                // Prepare content
+                let encodedContent;
+                if (filePath === 'last_updated.txt') {
+                    encodedContent = btoa(content);
+                } else {
+                    encodedContent = btoa(JSON.stringify(content, null, 2));
+                }
+
+                const response = await githubApiRequest(`/contents/${filePath}`, {
+                    method: 'PUT',
+                    body: JSON.stringify({
+                        message: commitMessage,
+                        content: encodedContent,
+                        sha: sha,
+                        branch: 'main'
+                    })
+                });
+
+                updateSyncStatus('success', 'Saved');
+                return response;
+            } catch (error) {
+                console.error('Error updating file:', error);
+                updateSyncStatus('error', 'Save failed');
+                throw error;
+            }
+        }
+
+        // Real-time synchronization
+        function startAutoSync() {
+            if (syncInterval) clearInterval(syncInterval);
+            syncInterval = setInterval(async () => {
+                if (isAuthenticated) {
+                    await checkForUpdates();
+                }
+            }, SYNC_INTERVAL_TIME);
+        }
+
+        function stopAutoSync() {
+            if (syncInterval) {
+                clearInterval(syncInterval);
+                syncInterval = null;
+            }
+        }
+
+        async function checkForUpdates() {
+            try {
+                const freshData = await getFileContent(DATA_FILE_PATH);
+                
+                if (freshData) {
+                    const freshHash = JSON.stringify(freshData);
+                    if (freshHash !== lastDataHash) {
+                        // Data has changed, reload
+                        departments = freshData;
+                        renderExtensions();
+                        await loadLastUpdatedDate();
+                        lastDataHash = freshHash;
+                        showNotification('Data updated from server', 'success');
+                    }
+                }
+            } catch (error) {
+                console.log('Sync check failed:', error);
+            }
+        }
+
+        async function manualRefresh() {
+            await loadData();
+            showNotification('Data refreshed', 'success');
+        }
+
+        function updateSyncStatus(status, message) {
+            syncIndicator.className = 'sync-indicator ' + status;
+            syncStatus.textContent = message;
+            
+            // Auto-clear success status after 2 seconds
+            if (status === 'success') {
+                setTimeout(() => {
+                    if (syncIndicator.classList.contains('success')) {
+                        updateSyncStatus('success', 'Synced');
+                    }
+                }, 2000);
+            }
         }
 
         // Authentication functions
@@ -929,62 +1127,10 @@ HR DEPARTMENT,JANE SMITH,1002
 
         function handleLogout() {
             isAuthenticated = false;
+            stopAutoSync();
             logoutBtn.style.display = 'none';
             showLoginModal();
             showNotification('Logged out successfully', 'success');
-        }
-
-        // GitHub API functions
-        async function githubApiRequest(endpoint, options = {}) {
-            const url = `https://api.github.com/repos/${GITHUB_REPO}${endpoint}`;
-            
-            const defaultOptions = {
-                headers: {
-                    'Authorization': `token ${GITHUB_TOKEN}`,
-                    'Accept': 'application/vnd.github.v3+json',
-                    'Content-Type': 'application/json'
-                }
-            };
-
-            const response = await fetch(url, { ...defaultOptions, ...options });
-            
-            if (!response.ok) {
-                throw new Error(`GitHub API error: ${response.status}`);
-            }
-            
-            return response.json();
-        }
-
-        async function getFileContent(filePath) {
-            try {
-                const data = await githubApiRequest(`/contents/${filePath}`);
-                return JSON.parse(atob(data.content));
-            } catch (error) {
-                console.error('Error fetching file:', error);
-                return null;
-            }
-        }
-
-        async function updateFile(filePath, content, commitMessage) {
-            try {
-                // Get current file SHA
-                const currentFile = await githubApiRequest(`/contents/${filePath}`);
-                const sha = currentFile.sha;
-
-                const response = await githubApiRequest(`/contents/${filePath}`, {
-                    method: 'PUT',
-                    body: JSON.stringify({
-                        message: commitMessage,
-                        content: btoa(JSON.stringify(content, null, 2)),
-                        sha: sha
-                    })
-                });
-
-                return response;
-            } catch (error) {
-                console.error('Error updating file:', error);
-                throw error;
-            }
         }
 
         // Data functions
@@ -997,6 +1143,12 @@ HR DEPARTMENT,JANE SMITH,1002
                     nextDeptId = Math.max(...departments.map(d => d.id)) + 1;
                     const allExtIds = departments.flatMap(d => d.extensions.map(e => e.id));
                     nextExtId = allExtIds.length > 0 ? Math.max(...allExtIds) + 1 : 1;
+                    
+                    // Store hash for change detection
+                    lastDataHash = JSON.stringify(departments);
+                    
+                    // Start auto-sync
+                    startAutoSync();
                 } else {
                     throw new Error('Failed to load data from GitHub');
                 }
@@ -1031,6 +1183,9 @@ HR DEPARTMENT,JANE SMITH,1002
                 const lastUpdated = new Date().toLocaleDateString('en-GB');
                 await updateFile(LAST_UPDATED_FILE_PATH, lastUpdated, 'Update last modified date');
                 
+                // Update local hash
+                lastDataHash = JSON.stringify(departments);
+                
                 showNotification('Data saved successfully to GitHub!', 'success');
                 await loadLastUpdatedDate();
             } catch (error) {
@@ -1047,16 +1202,12 @@ HR DEPARTMENT,JANE SMITH,1002
             }
 
             try {
-                const order = {};
-                departments.forEach((dept, index) => {
-                    order[dept.id] = index + 1;
-                });
-
                 await updateFile(DATA_FILE_PATH, departments, 'Update department order');
                 
-                // Update last updated file
                 const lastUpdated = new Date().toLocaleDateString('en-GB');
                 await updateFile(LAST_UPDATED_FILE_PATH, lastUpdated, 'Update last modified date');
+                
+                lastDataHash = JSON.stringify(departments);
                 
                 showNotification('Department arrangement saved to GitHub!', 'success');
                 await loadLastUpdatedDate();
